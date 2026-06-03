@@ -125,6 +125,7 @@ if __name__ == "__main__":
     dump_config["task_config"] = task_config
     dump_config["alg_config"] = alg_config
     dump_config["baseline_model"] = baseline_model
+    dump_config["algorithm"] = baseline_model
     dump_config["num_agents"] = num_agents
     dump_config["num_machines"] = num_machines
     dump_config["script"] = script_path_for_config(__file__)
