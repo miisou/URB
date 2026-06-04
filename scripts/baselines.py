@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
     # Check if baseline exists
     baseline_dir = Path(repo_root) / "baseline_models"
-    available_models = {file.stem for file in baseline_dir.glob("*.py")}
+    available_models = {file.stem for file in baseline_dir.glob("*.py")}.union({"gawron"})
     assert baseline_model in available_models, \
         f"Baseline model '{baseline_model}' not found in {baseline_dir}/. Available: {sorted(available_models)}"
 
