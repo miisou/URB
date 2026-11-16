@@ -1,0 +1,7 @@
+# hedge_group
+
+- **Idea:** all CAVs of an origin–destination pair share one multiplicative-weights (Hedge) distribution over the pair's routes, updated every day with a travel-time estimate for every route, not only the one an agent drove.
+- **Changes relative to the reference:** the reference is a bandit per agent: each CAV learns only from its own trips. Here the pair's CAVs pool what they observed, so every route used by anyone that day is updated for everyone; unused routes keep their last estimate (free-flow time at the start). Each CAV samples its route from the shared distribution. For testing, the pair's CAVs are split over the routes once, in proportion to the final distribution, and then stay put.
+- **Why it may help:** full-information online learning needs far fewer rounds than bandit learning, so the fleet should spend fewer days on bad routes. Sampling from one shared distribution also spreads a pair's CAVs over routes without each of them having to discover the split alone. From online learning (Freund and Schapire's Hedge).
+- **Prediction:** `t_CAV` within ±1% of `ref_tabular_iql`, since both aim at the same equilibrium; `cost_of_learning` at least 30% lower. The gain, if any, is in learning cost.
+- **Drop if:** `t_CAV` is more than 1% worse than the reference on the screen seed, or `cost_of_learning` is not lower. Promotion on `t_CAV` needs the usual 1% improvement.

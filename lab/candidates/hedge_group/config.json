@@ -1,0 +1,5 @@
+{
+    "training_eps": 600,
+    "eta0": 4.0,
+    "estimate_ema": 0.3
+}

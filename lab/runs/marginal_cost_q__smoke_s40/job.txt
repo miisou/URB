@@ -1,0 +1,2 @@
+job 573368 on bonk: marginal_cost_q__smoke_s40, start 2026-11-15T23:54:28+01:00
+exit code 0, end 2026-11-16T00:02:09+01:00

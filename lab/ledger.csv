@@ -1,0 +1,19 @@
+run_id,candidate,stage,seed,job_id,submitted,status,note
+ref_tabular_iql__screen_s40,ref_tabular_iql,screen,40,,,done,study run humdet_iql_sto_s40
+ref_aon__screen_s40,ref_aon,screen,40,,,done,study run humdet_aon_sto_s40
+ref_tabular_iql__confirm_s41,ref_tabular_iql,confirm,41,,,done,study run humdet_iql_sto_s41
+ref_aon__confirm_s41,ref_aon,confirm,41,,,done,study run humdet_aon_sto_s41
+ref_tabular_iql__confirm_s42,ref_tabular_iql,confirm,42,,,done,study run humdet_iql_sto_s42
+ref_aon__confirm_s42,ref_aon,confirm,42,,,done,study run humdet_aon_sto_s42
+tabular_q_port__smoke_s40,tabular_q_port,smoke,40,573108,2026-11-15T14:26,done,
+tabular_q_port__screen_s40,tabular_q_port,screen,40,573112,2026-11-15T14:36,done,
+ref_tabular_iql__confirm_s43,ref_tabular_iql,confirm,43,573113,2026-11-15T14:36,done,
+ref_aon__confirm_s43,ref_aon,confirm,43,573115,2026-11-15T14:40,done,
+fleet_local_search__smoke_s40,fleet_local_search,smoke,40,573367,2026-11-15T23:54,done,
+marginal_cost_q__smoke_s40,marginal_cost_q,smoke,40,573368,2026-11-15T23:54,done,
+hedge_group__smoke_s40,hedge_group,smoke,40,573369,2026-11-15T23:54,done,
+share_controller__smoke_s40,share_controller,smoke,40,573370,2026-11-15T23:54,done,
+fleet_local_search__screen_s40,fleet_local_search,screen,40,573376,2026-11-16T00:03,done,no metrics file
+marginal_cost_q__screen_s40,marginal_cost_q,screen,40,573377,2026-11-16T00:04,done,no metrics file
+hedge_group__screen_s40,hedge_group,screen,40,573378,2026-11-16T00:04,done,no metrics file
+share_controller__screen_s40,share_controller,screen,40,573379,2026-11-16T00:04,done,no metrics file

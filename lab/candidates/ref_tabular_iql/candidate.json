@@ -1,0 +1,5 @@
+{
+    "kind": "script",
+    "command": "python -u scripts/iql_tabular.py --id {id} --alg-conf config_ing_short --env-conf {env_conf} --task-conf {task_conf} --net {network} --env-seed {seed} --torch-seed {seed}",
+    "role": "reference"
+}

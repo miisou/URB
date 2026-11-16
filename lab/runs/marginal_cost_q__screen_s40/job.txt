@@ -1,0 +1,2 @@
+job 573377 on bonk: marginal_cost_q__screen_s40, start 2026-11-16T00:04:04+01:00
+exit code 0, end 2026-11-16T02:41:15+01:00

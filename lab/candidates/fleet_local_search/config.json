@@ -1,0 +1,7 @@
+{
+    "training_eps": 600,
+    "cost_ema": 0.2,
+    "z": 1.0,
+    "confirmations": 2,
+    "min_baseline_days": 3
+}

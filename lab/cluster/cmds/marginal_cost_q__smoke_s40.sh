@@ -1,0 +1,1 @@
+python -u scripts/lab_runner.py --id marginal_cost_q__smoke_s40 --candidate marginal_cost_q --env-conf config_ing_short --task-conf selfish_40 --net ingolstadt_custom2 --env-seed 40 --torch-seed 40 --smoke

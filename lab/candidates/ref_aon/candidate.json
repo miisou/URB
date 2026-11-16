@@ -1,0 +1,5 @@
+{
+    "kind": "script",
+    "command": "python -u scripts/baselines.py --id {id} --alg-conf config1 --env-conf {env_conf} --task-conf {task_conf} --net {network} --env-seed {seed} --model aon",
+    "role": "reference"
+}
