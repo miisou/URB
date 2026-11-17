@@ -1,0 +1,2 @@
+job 573819 on bonk: p12.hedge_group__screen_s40, start 2026-11-16T13:14:19+01:00
+exit code 2, end 2026-11-16T16:43:33+01:00

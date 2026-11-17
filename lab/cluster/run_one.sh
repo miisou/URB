@@ -15,9 +15,15 @@ OUT="$PATH_PROGRAM/lab/runs/$RUN_ID"
 mkdir -p "$LOCAL/venv" "$LOCAL/results" "$LOCAL/logs" "$OUT"
 LOG="$LOCAL/logs/${RUN_ID}_${SLURM_JOB_ID}.txt"
 echo "job $SLURM_JOB_ID on $(hostname): $RUN_ID, start $(date -Is)" > "$OUT/job.txt"
+# Run from a private copy of the code on the local disk: later submissions rewrite the shared copy,
+# and a script that is replaced while bash is still reading it fails with "Stale file handle".
+SNAP="$LOCAL/code/${RUN_ID}_${SLURM_JOB_ID}"
+mkdir -p "$SNAP/lab" "$SNAP/results"
+cp -r "$PATH_PROGRAM"/{scripts,config,analysis,baseline_models,networks,requirements.txt} "$SNAP/"
+cp -r "$PATH_PROGRAM"/lab/{fleet.py,arena.json,arenas,candidates,cluster} "$SNAP/lab/"
 set +e
 singularity exec --cleanenv --env RUN_ID="$RUN_ID" \
-    --bind "$PATH_PROGRAM":/app --bind "$LOCAL/results":/app/results --bind "$LOCAL/venv":/venv \
+    --bind "$SNAP":/app --bind "$LOCAL/results":/app/results --bind "$LOCAL/venv":/venv \
     "$CONTAINER" /bin/bash /app/lab/cluster/run_one_internal.sh > "$LOG" 2>&1
 RC=$?
 set -e
@@ -25,5 +31,6 @@ R="$LOCAL/results/$RUN_ID"
 [ -f "$R/exp_config.json" ] && cp "$R/exp_config.json" "$OUT/" || true
 [ -f "$R/metrics/BenchmarkMetrics.csv" ] && cp "$R/metrics/BenchmarkMetrics.csv" "$OUT/" || true
 grep -vE "Downloading|Collecting|Using cached|Requirement already" "$LOG" | tr '\r' '\n' | tail -60 > "$OUT/log_tail.txt" || true
+rm -rf "$SNAP"
 echo "exit code $RC, end $(date -Is)" >> "$OUT/job.txt"
 exit $RC

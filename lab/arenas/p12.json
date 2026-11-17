@@ -1,0 +1,32 @@
+{
+    "name": "ing2_selfish40_p12",
+    "frozen_on": "2026-11-16",
+    "network": "ingolstadt_custom2",
+    "env_conf": "lab_ing_short_p12",
+    "task_conf": "selfish_40",
+    "seeds": {
+        "smoke": [
+            40
+        ],
+        "screen": [
+            40
+        ],
+        "confirm": [
+            41,
+            42,
+            43
+        ]
+    },
+    "primary_metric": "t_CAV",
+    "primary_direction": "lower",
+    "reference": "ref_tabular_iql",
+    "secondary_reference": "ref_aon",
+    "min_improvement_pct": 1.0,
+    "report_metrics": [
+        "t_CAV",
+        "t_test",
+        "Effect_of_change",
+        "cost_of_learning",
+        "avg_time_lost"
+    ]
+}

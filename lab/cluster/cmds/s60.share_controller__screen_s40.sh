@@ -1,0 +1,1 @@
+python -u scripts/lab_runner.py --id s60.share_controller__screen_s40 --candidate share_controller --env-conf config_ing_short --task-conf selfish_60 --net ingolstadt_custom2 --env-seed 40 --torch-seed 40

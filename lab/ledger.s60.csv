@@ -1,0 +1,7 @@
+run_id,candidate,stage,seed,job_id,submitted,status,note
+s60.ref_tabular_iql__screen_s40,ref_tabular_iql,screen,40,573744,2026-11-16T12:50,done,FAILED
+s60.ref_aon__screen_s40,ref_aon,screen,40,573745,2026-11-16T12:50,done,FAILED
+s60.marginal_cost_q__screen_s40,marginal_cost_q,screen,40,573746,2026-11-16T12:50,done,FAILED
+s60.fleet_local_search__screen_s40,fleet_local_search,screen,40,573747,2026-11-16T12:50,done,FAILED
+s60.share_controller__screen_s40,share_controller,screen,40,573748,2026-11-16T12:50,done,FAILED
+s60.hedge_group__screen_s40,hedge_group,screen,40,573749,2026-11-16T12:50,done,FAILED

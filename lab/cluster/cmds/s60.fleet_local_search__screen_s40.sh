@@ -1,0 +1,1 @@
+python -u scripts/lab_runner.py --id s60.fleet_local_search__screen_s40 --candidate fleet_local_search --env-conf config_ing_short --task-conf selfish_60 --net ingolstadt_custom2 --env-seed 40 --torch-seed 40

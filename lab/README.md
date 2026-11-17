@@ -3,6 +3,8 @@
 A small loop for trying many routing methods on URB cheaply and keeping only the ones that survive.
 It sits in front of `studies/`: a candidate that is confirmed here is worth a full study; most are not.
 
+What the runs have taught so far is kept in [`memory/`](memory/README.md). Read it before designing a candidate.
+
 ## The loop
 
 1. **Card.** `python lab/labctl.py new <name>` creates `lab/candidates/<name>/`. Fill in `card.md` first:

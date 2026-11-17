@@ -120,3 +120,48 @@ class IndependentFleet(Fleet):
     def start_test(self):
         for agent in self.agents.values():
             agent.start_test()
+
+
+class RouteEstimates:
+    """
+    Travel-time estimates per CAV and route, in minutes. For a route the CAV has driven it is a running
+    mean of its own times; otherwise the running mean of its OD pair's times on that route; otherwise the
+    free-flow time. Free-flow times are optimistic, so untried routes look attractive until tried.
+    Routes that do not exist are +inf.
+    """
+
+    def __init__(self, ctx, own_ema=0.2, pair_ema=0.2):
+        self.own_ema, self.pair_ema = own_ema, pair_ema
+        self.free, self.own, self.pair_of, self.allowed = {}, {}, {}, {}
+        self.shared = {}
+        for info in ctx["agents"]:
+            key = (info["origin"], info["destination"])
+            times = free_flow_of(info, ctx["free_flow"])
+            self.free[info["id"]] = np.where(times < INVALID_TIME, times, np.inf)
+            self.own[info["id"]] = np.full(info["n_actions"], np.nan)
+            self.pair_of[info["id"]] = key
+            self.allowed[info["id"]] = allowed_routes(info, ctx["free_flow"])
+            self.shared.setdefault(key, np.full(info["n_actions"], np.nan))
+
+    def update(self, choices, times):
+        sums, counts = {}, {}
+        for agent_id, time in times.items():
+            route = choices[agent_id]
+            own = self.own[agent_id]
+            own[route] = time if np.isnan(own[route]) else own[route] + self.own_ema * (time - own[route])
+            cell = (self.pair_of[agent_id], route)
+            sums[cell] = sums.get(cell, 0.0) + time
+            counts[cell] = counts.get(cell, 0) + 1
+        self.today = {cell: sums[cell] / counts[cell] for cell in sums}      # pair-route means of the day
+        for (key, route), value in self.today.items():
+            shared = self.shared[key]
+            shared[route] = value if np.isnan(shared[route]) else shared[route] + self.pair_ema * (value - shared[route])
+
+    def of(self, agent_id):
+        estimate = self.own[agent_id].copy()
+        missing = np.isnan(estimate)
+        estimate[missing] = self.shared[self.pair_of[agent_id]][missing]
+        missing = np.isnan(estimate)
+        estimate[missing] = self.free[agent_id][missing]
+        estimate[np.isinf(self.free[agent_id])] = np.inf
+        return estimate

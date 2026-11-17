@@ -1,0 +1,2 @@
+job 574099 on bonk: regret_matching__screen_s40, start 2026-11-16T20:31:56+01:00
+exit code 0, end 2026-11-16T23:53:13+01:00

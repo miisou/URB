@@ -1,0 +1,7 @@
+{
+    "training_eps": 600,
+    "explore_days": 60,
+    "refresh_explore": 0.03,
+    "offset_ema": 0.2,
+    "min_fit_days": 15
+}

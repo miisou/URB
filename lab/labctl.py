@@ -3,7 +3,10 @@
 Control script of the lab: from a candidate card to a row in lab/LEADERBOARD.md.
 
     python lab/labctl.py new <name>                       scaffold lab/candidates/<name>/
-    python lab/labctl.py submit <name> --stage smoke|screen|confirm [--seeds 43 44]
+    python lab/labctl.py submit <name> --stage smoke|screen|confirm [--seeds 43 44] [--algo-seed 1040]
+                                                          --algo-seed: same environment seed, another algorithm
+                                                          seed; the run id gets "_a<N>" and the run is listed
+                                                          but kept out of the candidate's summary row
     python lab/labctl.py status                           refresh job states in lab/ledger.csv
     python lab/labctl.py collect                          fetch finished runs, then rebuild the table
     python lab/labctl.py table                            rebuild lab/LEADERBOARD.md from lab/runs/
@@ -26,13 +29,20 @@ import sys
 
 LAB = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(LAB)
-ARENA = json.load(open(os.path.join(LAB, "arena.json"), encoding="utf-8"))
+# The default arena is lab/arena.json. LAB_ARENA=<name> selects lab/arenas/<name>.json instead; its runs,
+# ledger, and table carry the name, and its cluster settings fall back to the default arena's.
+ARENA_KEY = os.environ.get("LAB_ARENA", "")
+_default_arena = json.load(open(os.path.join(LAB, "arena.json"), encoding="utf-8"))
+ARENA = (json.load(open(os.path.join(LAB, "arenas", ARENA_KEY + ".json"), encoding="utf-8"))
+         if ARENA_KEY else _default_arena)
+ARENA.setdefault("cluster", _default_arena["cluster"])
+SUFFIX = "." + ARENA_KEY if ARENA_KEY else ""
 CL = ARENA["cluster"]
 # The login is kept out of the repository: lab/cluster.local.json {"host": "user@gateway"} or URB_LAB_HOST.
 _local = os.path.join(LAB, "cluster.local.json")
 CL["host"] = os.environ.get("URB_LAB_HOST") or (
     json.load(open(_local, encoding="utf-8"))["host"] if os.path.exists(_local) else None)
-LEDGER = os.path.join(LAB, "ledger.csv")
+LEDGER = os.path.join(LAB, f"ledger{SUFFIX}.csv")
 FIELDS = ["run_id", "candidate", "stage", "seed", "job_id", "submitted", "status", "note"]
 STAGES = ["smoke", "screen", "confirm"]
 
@@ -64,8 +74,15 @@ def load_candidate(name):
     return json.load(open(path, encoding="utf-8"))
 
 
-def run_id_of(name, stage, seed):
-    return f"{name}__{stage}_s{seed}"
+def run_id_of(name, stage, seed, algo_seed=None):
+    prefix = ARENA_KEY + "." if ARENA_KEY else ""
+    suffix = f"_a{algo_seed}" if algo_seed is not None else ""
+    return f"{prefix}{name}__{stage}_s{seed}{suffix}"
+
+
+def is_extra_algo_seed(run_id):
+    """Runs with a second algorithm seed measure noise; they stay out of the summary rows."""
+    return "_a" in run_id.rsplit("__", 1)[-1]
 
 
 def metrics_of(run_id):
@@ -103,7 +120,7 @@ def ssh(command, stdin=None, timeout=180):
 def sync():
     """Send the code the runs need. lab/runs/ on the cluster is never overwritten."""
     paths = ["scripts", "config", "analysis", "baseline_models", f"networks/{ARENA['network']}",
-             "requirements.txt", "lab/fleet.py", "lab/arena.json", "lab/candidates", "lab/cluster"]
+             "requirements.txt", "lab/fleet.py", "lab/arena.json", "lab/arenas", "lab/candidates", "lab/cluster"]
     remote = (f"mkdir -p ~/{CL['remote_dir']} && tar xzf - -C ~/{CL['remote_dir']} && cd ~/{CL['remote_dir']} && "
               "sed -i 's/\\r$//' lab/cluster/*.sh lab/cluster/cmds/*.sh 2>/dev/null; mkdir -p lab/logs lab/runs")
     tar = subprocess.Popen(["tar", "czf", "-"] + paths, cwd=ROOT, stdout=subprocess.PIPE)
@@ -113,18 +130,20 @@ def sync():
         sys.exit(f"sync failed: {result.stderr.strip()}")
 
 
-def build_command(name, cand, stage, seed, run_id):
+def build_command(name, cand, stage, seed, run_id, algo_seed=None):
     values = dict(id=run_id, seed=seed, env_conf=ARENA["env_conf"], task_conf=ARENA["task_conf"],
-                  network=ARENA["network"])
+                  network=ARENA["network"], algo_seed=seed if algo_seed is None else algo_seed)
     if cand["kind"] == "lab":
         command = ("python -u scripts/lab_runner.py --id {id} --candidate " + name +
                    " --env-conf {env_conf} --task-conf {task_conf} --net {network}"
-                   " --env-seed {seed} --torch-seed {seed}").format(**values)
+                   " --env-seed {seed} --torch-seed {algo_seed}").format(**values)
         if stage == "smoke":
             command += " --smoke"
         return command
     if stage == "smoke":
         sys.exit(f"'{name}' runs an existing script; it has no smoke stage.")
+    if algo_seed is not None:
+        sys.exit(f"'{name}' runs an existing script; --algo-seed is only supported for lab candidates.")
     return cand["command"].format(**values)
 
 
@@ -152,7 +171,7 @@ def cmd_submit(args):
     active = {row["run_id"] for row in ledger if row["status"] in ("submitted", "running", "done")}
     todo = []
     for seed in seeds:
-        run_id = run_id_of(args.name, args.stage, seed)
+        run_id = run_id_of(args.name, args.stage, seed, args.algo_seed)
         if run_id in active:
             print(f"skip {run_id}: already {next(r['status'] for r in ledger if r['run_id'] == run_id)}")
             continue
@@ -166,7 +185,7 @@ def cmd_submit(args):
     os.makedirs(os.path.join(LAB, "cluster", "cmds"), exist_ok=True)
     for seed, run_id in todo:
         with open(os.path.join(LAB, "cluster", "cmds", run_id + ".sh"), "w", encoding="utf-8", newline="\n") as f:
-            f.write(build_command(args.name, cand, args.stage, seed, run_id) + "\n")
+            f.write(build_command(args.name, cand, args.stage, seed, run_id, args.algo_seed) + "\n")
     sync()
     for seed, run_id in todo:
         sbatch = (f"cd ~/{CL['remote_dir']} && sbatch --parsable -p {CL['partition']} --qos={CL['qos']} "
@@ -277,7 +296,8 @@ def cmd_table(args):
 
     def reference_value(ref_name, seed):
         for row in done:
-            if row["candidate"] == ref_name and row["seed"] == str(seed) and row["stage"] != "smoke":
+            if (row["candidate"] == ref_name and row["seed"] == str(seed) and row["stage"] != "smoke"
+                    and not is_extra_algo_seed(row["run_id"])):
                 return row["metrics"].get(primary)
         return None
 
@@ -287,6 +307,8 @@ def cmd_table(args):
         cand = load_candidate(name)
         role = cand.get("role", "candidate")
         mine = [row for row in done if row["candidate"] == name]
+        extra = [row for row in mine if is_extra_algo_seed(row["run_id"])]
+        mine = [row for row in mine if not is_extra_algo_seed(row["run_id"])]
         reached = next((stage for stage in reversed(STAGES) if any(r["stage"] == stage for r in mine)), None)
         top = [row for row in mine if row["stage"] == reached]
         if role == "reference":     # a reference is summarised over every seed it has
@@ -332,7 +354,7 @@ def cmd_table(args):
                  fmt(mean([d for d in deltas2 if d is not None]), 2)]
         cells += [fmt(mean([row["metrics"].get(m) for row in top])) for m in ARENA["report_metrics"] if m != primary]
         summary.append((role != "reference", -(mean(known) or -1e9), cells + [verdict]))
-        for row in sorted(mine, key=lambda r: (STAGES.index(r["stage"]), r["seed"])):
+        for row in sorted(mine + extra, key=lambda r: (STAGES.index(r["stage"]), r["seed"], r["run_id"])):
             if row["stage"] == "smoke":
                 rows_out.append([row["run_id"], row["job_id"] or "-", "ran", "-", "-", "smoke: numbers not comparable"])
                 continue
@@ -368,9 +390,9 @@ def cmd_table(args):
     if unfinished:
         lines += ["", "## Not finished", "", "| Run | Job | Status | Note |", "| --- | --- | --- | --- |"]
         lines += [f"| {row['run_id']} | {row['job_id'] or '-'} | {row['status']} | {row['note']} |" for row in unfinished]
-    with open(os.path.join(LAB, "LEADERBOARD.md"), "w", encoding="utf-8", newline="\n") as f:
+    with open(os.path.join(LAB, f"LEADERBOARD{SUFFIX}.md"), "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(lines) + "\n")
-    print(f"wrote {os.path.join(LAB, 'LEADERBOARD.md')}: {len(summary)} candidates, {len(rows_out)} finished runs")
+    print(f"wrote {os.path.join(LAB, f'LEADERBOARD{SUFFIX}.md')}: {len(summary)} candidates, {len(rows_out)} finished runs")
 
 
 def main():
@@ -378,7 +400,9 @@ def main():
     sub = parser.add_subparsers(dest="command", required=True)
     p = sub.add_parser("new"); p.add_argument("name"); p.set_defaults(func=cmd_new)
     p = sub.add_parser("submit"); p.add_argument("name"); p.add_argument("--stage", choices=STAGES, required=True)
-    p.add_argument("--seeds", type=int, nargs="*"); p.set_defaults(func=cmd_submit)
+    p.add_argument("--seeds", type=int, nargs="*")
+    p.add_argument("--algo-seed", type=int, default=None, help="algorithm seed instead of the environment seed")
+    p.set_defaults(func=cmd_submit)
     p = sub.add_parser("status"); p.set_defaults(func=cmd_status)
     p = sub.add_parser("collect"); p.set_defaults(func=cmd_collect)
     p = sub.add_parser("table"); p.set_defaults(func=cmd_table)

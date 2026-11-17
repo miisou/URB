@@ -1,0 +1,6 @@
+{
+    "training_eps": 600,
+    "own_ema": 0.2,
+    "pair_ema": 0.2,
+    "regret_decay": 0.99
+}

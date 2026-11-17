@@ -1,0 +1,2 @@
+job 574102 on bonk: p12.annealed_revision__screen_s40, start 2026-11-16T23:53:13+01:00
+exit code 0, end 2026-11-17T03:29:33+01:00

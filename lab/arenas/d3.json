@@ -1,0 +1,33 @@
+{
+    "name": "ing2x3_selfish40_d3",
+    "frozen_on": "2026-11-18",
+    "note": "ingolstadt_custom2 with every vehicle duplicated to x3 within its origin-destination pair (departures jittered by up to 60 s, seed 2026; lab/make_scaled_network.py). Heavy congestion; RouteRL removes a vehicle stopped for 600 s and books it at simulation_timesteps/60 min (about 30 min).",
+    "network": "ingolstadt_custom2_d3",
+    "env_conf": "config_ing_short",
+    "task_conf": "selfish_40",
+    "seeds": {
+        "smoke": [
+            40
+        ],
+        "screen": [
+            40
+        ],
+        "confirm": [
+            41,
+            42,
+            43
+        ]
+    },
+    "primary_metric": "t_CAV",
+    "primary_direction": "lower",
+    "reference": "ref_tabular_iql",
+    "secondary_reference": "ref_aon",
+    "min_improvement_pct": 1.0,
+    "report_metrics": [
+        "t_CAV",
+        "t_test",
+        "Effect_of_change",
+        "cost_of_learning",
+        "avg_time_lost"
+    ]
+}

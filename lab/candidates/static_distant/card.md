@@ -1,0 +1,7 @@
+# static_distant
+
+- **Idea:** a diagnostic, not a method. Every CAV drives one fixed route for the whole run: the route with the **second-lowest** mean travel time in the pooled table (CAV, route) from the trip logs of earlier runs on seed 40 (`lab/diag/make_oracle.py --rank 2`). CAVs with only one route measured in the table keep that route.
+- **Changes relative to the reference:** no learning and no exploration; ten nominal training days. The assignment is far from anything a method reached: by construction no CAV is on its table-best route (except the ones with a single measured route).
+- **Why:** finding F10 says a CAV's travel time is set by its own route, not by the fleet's arrangement. The `static_oracle` check was local (88% of its routes coincide with the reference's). Moving most of the fleet at once to a second route is a distant arrangement; if F10 holds, the table predicts its `t_CAV`.
+- **Prediction (written before the run, from the table):** `t_CAV` **4.6769** (table-best mean 4.1957, reference 4.2114; 414 CAVs, all with at least two measured routes; routes 0/1/2/3 used by 87/146/81/100 CAVs) min on seed 40. F10 survives if the actual value is within 0.5% of this. If the actual value is clearly different (higher if the second routes congest when everyone moves to them, lower if moving relieves the first routes), the times depend on the joint arrangement and F10 is refuted for distant arrangements. Remaining humans are expected to stay near 4.50.
+- **Drop if:** not applicable as a method.

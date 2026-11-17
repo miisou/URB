@@ -1,0 +1,8 @@
+{
+    "training_eps": 600,
+    "evaporation": 0.05,
+    "alpha": 1.0,
+    "beta": 3.0,
+    "own_ema": 0.2,
+    "pair_ema": 0.2
+}

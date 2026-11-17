@@ -1,0 +1,2 @@
+job 575215 on bonk: static_oracle__screen_s40, start 2026-11-17T18:50:13+01:00
+exit code 0, end 2026-11-17T20:17:46+01:00

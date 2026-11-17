@@ -1,0 +1,1 @@
+python -u scripts/iql_tabular.py --id s60.ref_tabular_iql__screen_s40 --alg-conf config_ing_short --env-conf config_ing_short --task-conf selfish_60 --net ingolstadt_custom2 --env-seed 40 --torch-seed 40

@@ -1,0 +1,2 @@
+job 573743 on bonk: p12.tabular_q_port__smoke_s40, start 2026-11-16T12:49:57+01:00
+exit code 2, end 2026-11-16T13:07:44+01:00

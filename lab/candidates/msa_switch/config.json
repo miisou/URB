@@ -1,0 +1,6 @@
+{
+    "training_eps": 600,
+    "step_scale": 5.0,
+    "own_ema": 0.2,
+    "pair_ema": 0.2
+}

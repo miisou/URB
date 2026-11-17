@@ -1,0 +1,8 @@
+{
+    "training_eps": 600,
+    "memory": 2,
+    "strategies": 4,
+    "own_ema": 0.2,
+    "pair_ema": 0.2,
+    "freeze_window": 50
+}

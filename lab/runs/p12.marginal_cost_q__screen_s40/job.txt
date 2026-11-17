@@ -1,0 +1,2 @@
+job 573821 on bonk: p12.marginal_cost_q__screen_s40, start 2026-11-16T13:14:25+01:00
+exit code 0, end 2026-11-16T16:52:17+01:00

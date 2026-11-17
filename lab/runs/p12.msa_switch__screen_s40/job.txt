@@ -1,0 +1,2 @@
+job 574098 on bonk: p12.msa_switch__screen_s40, start 2026-11-16T20:31:56+01:00
+exit code 0, end 2026-11-17T00:11:41+01:00
