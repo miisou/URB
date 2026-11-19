@@ -12,6 +12,9 @@ Per run: phases from the run's exp_config.json (pre = human days, train = CAV le
 - load effect: extra minutes per additional vehicle of the same pair on the same route on the same day,
   CAV trips of the CAV phase, with (CAV, route) and day fixed effects (two-way demeaning). Reported for the
   count of fleet CAVs and for the count of all vehicles of the pair on that route.
+- removal events (logged days with at least one removal) per day, and the minutes of each group's mean they
+  account for (mean with removed trips minus mean without);
+- settling of the humans before CAVs: mean time of everyone in days H-99..H-50 against H-49..H.
 """
 import json, os, sys
 import numpy as np
@@ -60,7 +63,18 @@ def summarise(folder, run):
     for name, part in (("pre", pre), ("train", train), ("test", test)):
         days = part.day.nunique()
         out[f"removed_{name}"] = int(part.removed.sum())
+        # an event is a logged day with at least one removal
+        out[f"removal_events_per_day_{name}"] = part[part.removed].day.nunique() / days if days else np.nan
         out[f"removed_per_day_{name}"] = part.removed.sum() / days if days else np.nan
+    for name, part in (("train", train), ("test", test)):
+        for kind, sel in (("CAV", part.kind == "AV"), ("HDV", part.kind != "AV")):
+            x = part[sel]
+            # minutes of the mean that come from removed trips being booked at ~30 min
+            out[f"{kind}_{name}_minutes_from_removed"] = x.travel_time.mean() - x[~x.removed].travel_time.mean()
+    a = d[(d.day > H - 100) & (d.day <= H - 50)].travel_time.mean()
+    b = d[(d.day > H - 50) & (d.day <= H)].travel_time.mean()
+    out["all_pre_days_-100_-51"], out["all_pre_days_-50_0"] = a, b
+    out["human_drift_%"] = 100 * (b - a) / a
     out["removed_share_%"] = 100 * d.removed.mean()
     ok = d[~d.removed & d.ff.notna()]
     out["ratio_median"] = ok.ratio.median()

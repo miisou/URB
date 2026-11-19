@@ -1,6 +1,18 @@
 # Open questions and where headroom may be
 
-As of 16 November 2026.
+As of 19 November 2026. The focus has moved from the leaderboard column to "what works and why" and to settings
+where methods separate; the ranked list of hypotheses is in `hypotheses.md`.
+
+## Open after the 19 November batch
+
+| Question | Cheapest test |
+| --- | --- |
+| Is there room above the reference at ×2 for a coordinated assignment? | Static oracle from the ×2 table, tested on days 901–1000 (submitted) |
+| Is the ×1 oracle's +0.42% a test-window effect? | Same oracle with 600 training days (submitted) |
+| Why does `annealed_revision` settle on a poor assignment at ×2? | Rerun with removed-vehicle days excluded from its estimates |
+| Algorithm-seed noise at ×2 | Second seed for the reference and `hedge_group` |
+| Do `regret_matching` and `surrogate_fill` hold at ×2? | Runs resubmitted |
+| A congested arena between ×2 and ×3, or a longer human phase | Not designed yet |
 
 ## The goal and its two readings
 

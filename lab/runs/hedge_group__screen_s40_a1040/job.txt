@@ -1,0 +1,2 @@
+job 575521 on bonk: hedge_group__screen_s40_a1040, start 2026-11-18T10:13:24+01:00
+exit code 0, end 2026-11-18T13:16:14+01:00

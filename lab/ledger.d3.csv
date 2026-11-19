@@ -1,2 +1,5 @@
 run_id,candidate,stage,seed,job_id,submitted,status,note
-d3.tabular_q_port__smoke_s40,tabular_q_port,smoke,40,575510,2026-11-17T20:44,submitted,
+d3.tabular_q_port__smoke_s40,tabular_q_port,smoke,40,575749,2026-11-17T23:13,done,
+d3.ref_tabular_iql__screen_s40,ref_tabular_iql,screen,40,576606,2026-11-18T19:44,failed,cancelled after 17.5 h: arena d3 dropped (metric rewards getting stuck)
+d3.ref_aon__screen_s40,ref_aon,screen,40,576607,2026-11-18T19:44,done,
+d3.tabular_q_decay__screen_s40,tabular_q_decay,screen,40,576608,2026-11-18T19:44,failed,cancelled after 17.5 h: arena d3 dropped (metric rewards getting stuck)

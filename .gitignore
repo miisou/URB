@@ -207,3 +207,4 @@ studies/*/review/REVIEW.md
 # packed trip logs, 50 MB
 lab/diag/trips/
 lab/diag/*.out
+lab/diag/trips_smoke/

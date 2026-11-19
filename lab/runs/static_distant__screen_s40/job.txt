@@ -1,0 +1,2 @@
+job 575533 on bonk: static_distant__screen_s40, start 2026-11-18T10:39:42+01:00
+exit code 0, end 2026-11-18T12:02:39+01:00

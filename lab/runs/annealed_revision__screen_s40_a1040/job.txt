@@ -1,0 +1,2 @@
+job 575519 on bonk: annealed_revision__screen_s40_a1040, start 2026-11-18T02:13:46+01:00
+exit code 0, end 2026-11-18T05:31:55+01:00

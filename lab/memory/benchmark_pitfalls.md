@@ -57,3 +57,17 @@ Why it was replaced is not stated in the commit. Sixty-three stored results stil
   stored runs; `altruistic`, `cooperative`, `militant` fail. *Inferred* reason: a group mean barely depends on one
   CAV's own choice, so it shifts all its route values equally; with no own-time term there is no signal left.
 - Route sets differ by seed when routes are generated on the fly, so "seed" also means "different routes".
+
+## Test days differ between runs of different training length (measured, 19 November)
+
+Humans are frozen, but each day has its own random draws, and the test window is "the 100 days after training".
+A method trained for 200 days and one trained for 600 are tested on different days. At demand ×1 this moves
+`t_CAV` of an unchanged all-or-nothing fleet by about 0.4%; at ×2 by up to 5% (5.92 to 6.23 min across blocks).
+**Compare methods only on the same day numbers**, and give baselines the same training length as the methods.
+
+## Heavy congestion: a removed vehicle is recorded as faster than one that arrives (measured, 19 November)
+
+RouteRL removes a vehicle that stands for 600 s and records about 29.97 min for it. At demand ×3 on
+`ingolstadt_custom2` vehicles that arrive take 40–72 min on jam days, removals happen on about 80% of days
+(18–30 per day), and the human phase never settles. Mean travel time then rewards getting stuck. The ×3 arena
+is unusable; at ×2 removals are rare (at most about 1 per test day) and add under 0.01 min.

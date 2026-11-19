@@ -7,7 +7,7 @@ unless stated. Cards and code are under `lab/candidates/<name>/`.
 
 | Idea | Field | Candidate | Result | Verdict and reason |
 | --- | --- | --- | --- | --- |
-| Marginal-cost learning signal | transport economics | `marginal_cost_q` | +0.08%; −0.9% with 12 routes | No gain. CAVs barely load each other (F4). Exists upstream. Cost of learning 26% lower |
+| Marginal-cost learning signal | transport economics | `marginal_cost_q` | +0.08%; −0.9% with 12 routes | No gain. CAVs barely load each other (F4). Upstream has only a config key for it, no code found; weak test (same pair, same route only, reference's epsilon) |
 | Local search on the joint assignment | optimisation | `fleet_local_search` | −0.6%; −1.1% at 60% | Slower. Optimising a pair's mean has no room (F4); one move per pair every two days is slow |
 | Shared multiplicative weights per pair | online learning | `hedge_group` | −0.8% | Slower by the individualisation gap (F6). Cost of learning 45% lower |
 | Proportional controller of route shares | control theory | `share_controller` | −0.8%; −2.0% with 12 routes | Same weakness as Hedge, worse with more routes. Cheapest learning (−48%) |
@@ -19,6 +19,12 @@ unless stated. Cards and code are under `lab/candidates/<name>/`.
 | Fitted load model, fill by departure order | operations research | `surrogate_fill` | +0.11%; −0.2% with 12 routes | Ties the reference with 4 routes (best single number so far, inside the 0.3% slack). Cost of learning 1.85 |
 | Larger route set (12) | environment design | arena `p12` | −2.5% for the reference itself | The largest effect found. Not an algorithm; changes the human baseline too (F7) |
 | Larger CAV share (60%) | environment design | arena `s60` | no method gains | Coordination ideas did not start to pay off |
+
+Added 19 November (see findings F15–F17): `tabular_q_decay` ties the reference (+0.11%; −0.40% with 12 routes;
++0.006 min at demand ×2); `pheromone_v2` −0.40%; `minority_game_v2` −5.71%; `static_distant` −14% as predicted
+in sign but 2.9% worse than its prediction. At demand ×2, same days: `hedge_group` not distinguishable from the
+reference, `aon_fixed` +0.23 min, `annealed_revision` +0.33 min. "Δ vs `ref_aon`" compares different test days
+and should not be used.
 
 ## Not tried, with the current view of each
 
@@ -34,7 +40,7 @@ unless stated. Cards and code are under `lab/candidates/<name>/`.
 
 ## Design lessons
 
-> Lessons 1, 3 and 9 and every "cost of learning" figure in this file were found wrong or unsupported by an
+> Lessons 1, 3 and 8 (numbered 9 before 18 November) and every "cost of learning" figure in this file were found wrong or unsupported by an
 > independent review: see "Corrections after an independent review" in `findings.md` before using them.
 
 1. **A CAV's problem here is "find my best of four routes".** Route gaps are large, interactions small, the day's
@@ -46,10 +52,10 @@ unless stated. Cards and code are under `lab/candidates/<name>/`.
 4. **Starting from the shortest route is free.** 75% of CAVs end there anyway.
 5. **A fleet objective needs fleet-sized interactions.** They are absent at 40% and still absent at 60%.
 6. **The route set bounds everything.** A method cannot beat the best route it is offered.
-8. **Ten distinct methods, one answer (17 November).** With 4 routes all ten candidates land between +0.11% and
+7. **Ten distinct methods, one answer (17 November).** With 4 routes all ten candidates land between +0.11% and
    −0.84% of the reference; with 12 routes between +0.08% and −2.0%. Nothing reaches the 1% threshold on one seed.
    The spread between methods is smaller than the 2.5% from the route set and the 3% seed-to-seed spread. Another
    learner on the same route set is unlikely to win; the levers left are the route set and the setting.
-9. **Cheap learning does not survive more routes.** Methods that halve the cost of learning with 4 routes
+8. **Cheap learning does not survive more routes (wrong, see the note above).** Methods that halve the cost of learning with 4 routes
    (regret matching, MSA) lose that edge with 12; the annealed and pooled-share methods keep part of it.
-7. **Frozen routes at test.** Every candidate fixes its routes before testing; exploration left on at test costs time.
+9. **Frozen routes at test.** Every candidate fixes its routes before testing; exploration left on at test costs time.

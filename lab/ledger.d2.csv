@@ -1,2 +1,11 @@
 run_id,candidate,stage,seed,job_id,submitted,status,note
-d2.tabular_q_port__smoke_s40,tabular_q_port,smoke,40,575509,2026-11-17T20:44,submitted,
+d2.tabular_q_port__smoke_s40,tabular_q_port,smoke,40,575509,2026-11-17T20:44,done,
+d2.ref_tabular_iql__screen_s40,ref_tabular_iql,screen,40,576091,2026-11-18T08:38,done,
+d2.ref_aon__screen_s40,ref_aon,screen,40,576092,2026-11-18T08:38,done,
+d2.tabular_q_decay__screen_s40,tabular_q_decay,screen,40,576093,2026-11-18T08:38,done,
+d2.annealed_revision__screen_s40,annealed_revision,screen,40,576601,2026-11-18T19:44,done,
+d2.hedge_group__screen_s40,hedge_group,screen,40,576604,2026-11-18T19:44,done,
+d2.aon_fixed__screen_s40,aon_fixed,screen,40,576605,2026-11-18T19:44,done,
+d2.regret_matching__screen_s40,regret_matching,screen,40,577318,2026-11-19T12:58,submitted,
+d2.surrogate_fill__screen_s40,surrogate_fill,screen,40,577319,2026-11-19T12:58,submitted,
+d2.static_oracle_d2__smoke_s40,static_oracle_d2,smoke,40,577330,2026-11-19T13:14,submitted,

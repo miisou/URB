@@ -1,0 +1,2 @@
+job 576093 on bonk: d2.tabular_q_decay__screen_s40, start 2026-11-18T17:23:36+01:00
+exit code 0, end 2026-11-19T00:47:41+01:00

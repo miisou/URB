@@ -25,8 +25,9 @@ Checked against URB `5457dcf` and RouteRL `routerl-nightly` (main at `ccf7212`),
 
 Seven numbers per CAV (3 + number of routes):
 
-- one travel-time estimate per route for today: a running mean over vehicles of the same pair that departed earlier
-  today and used that route, starting from the free-flow time;
+- one travel-time estimate per route for today: an exponentially smoothed average (weight 2/(k+1)) over the last
+  up to 10 vehicles of the same pair, humans included, that used that route and have already **arrived** today,
+  starting from the free-flow time. Vehicles still on the road do not count, so early departures see free-flow;
 - origin index, destination index, departure time. These three are constant for a CAV.
 
 Travel times are in minutes (*measured*: values 3–6 in the logs).
@@ -36,8 +37,9 @@ Travel times are in minutes (*measured*: values 3–6 in the logs).
 `a·own + b·group + c·others + d·all`, each a travel time (group = same kind, others = other kind), over vehicles of
 the same pair. Coefficients by behaviour: selfish `(-1,0,0,0)`, collaborative `(-0.5,-0.5,0,0)`, social
 `(-0.5,0,0,-0.5)`, competitive `(-2,0,1,0)`, altruistic `(0,0,0,-1)`, malicious `(0,0,1,0)`. Under `selfish`
-the reward is minus the CAV's own travel time. Upstream also has `marginal_cost_coefficient_beta` in some task
-configs; its implementation was not read.
+the reward is minus the CAV's own travel time. Upstream task configs carry a `marginal_cost_coefficient_beta` key, but no code
+that uses it was found in URB's scripts or in `routerl/` at the versions above. The lab's `marginal_cost_q` is
+its own implementation (same pair, same route only), not a port of an upstream one.
 
 ## Humans (Gawron model)
 
@@ -86,5 +88,6 @@ on its own travel times. The neural learners receive the full observation but be
 
 `eps_decay` is applied once per day. Every upstream tabular config reaches epsilon 0.05 by the end of training
 except `config_ing_short` (600 days), where epsilon only falls from 0.5 to 0.40. That config is the one behind the
-Ingolstadt rows and this lab's reference. Test days are greedy, so test metrics are unaffected; anything measured
-during training is.
+Ingolstadt rows and this lab's reference. Test days are greedy, so no exploration happens at test; the schedule still shapes the test result indirectly,
+through the value estimates and the human-facing loads reached by the end of training. Anything measured during
+training is affected directly.

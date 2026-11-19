@@ -1,0 +1,2 @@
+job 576089 on bonk: minority_game_v2__screen_s40, start 2026-11-18T16:26:49+01:00
+exit code 0, end 2026-11-18T19:38:07+01:00

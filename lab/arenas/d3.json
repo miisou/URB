@@ -1,7 +1,7 @@
 {
     "name": "ing2x3_selfish40_d3",
     "frozen_on": "2026-11-18",
-    "note": "ingolstadt_custom2 with every vehicle duplicated to x3 within its origin-destination pair (departures jittered by up to 60 s, seed 2026; lab/make_scaled_network.py). Heavy congestion; RouteRL removes a vehicle stopped for 600 s and books it at simulation_timesteps/60 min (about 30 min).",
+    "note": "UNUSABLE (19 Nov 2026): at x3 a vehicle removed after standing still for 600 s is logged at 29.97 min, while vehicles that arrive take 40-72 min on bad days, so the metric rewards getting stuck. Removals on ~80% of days. Dropped; kept for the record. ingolstadt_custom2 with every vehicle duplicated to x3 within its origin-destination pair (departures jittered by up to 60 s, seed 2026; lab/make_scaled_network.py). Heavy congestion; RouteRL removes a vehicle stopped for 600 s and books it at simulation_timesteps/60 min (about 30 min).",
     "network": "ingolstadt_custom2_d3",
     "env_conf": "config_ing_short",
     "task_conf": "selfish_40",
@@ -29,5 +29,19 @@
         "Effect_of_change",
         "cost_of_learning",
         "avg_time_lost"
-    ]
+    ],
+    "cluster": {
+        "remote_dir": "URB-lab",
+        "partition": "rknodes",
+        "qos": "normal",
+        "cpus": 2,
+        "mem": "12G",
+        "time": {
+            "smoke": "03:00:00",
+            "screen": "46:00:00",
+            "confirm": "46:00:00"
+        },
+        "max_parallel": 12
+    },
+    "status": "UNUSABLE (19 Nov 2026): at x3 a vehicle removed after standing still for 600 s is logged at 29.97 min, while vehicles that arrive take 40-72 min on bad days, so the metric rewards getting stuck. Removals on ~80% of days. Dropped; kept for the record."
 }

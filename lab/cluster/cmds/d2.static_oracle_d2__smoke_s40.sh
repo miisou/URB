@@ -1,0 +1,1 @@
+python -u scripts/lab_runner.py --id d2.static_oracle_d2__smoke_s40 --candidate static_oracle_d2 --env-conf config_ing_short --task-conf selfish_40 --net ingolstadt_custom2_d2 --env-seed 40 --torch-seed 40 --smoke

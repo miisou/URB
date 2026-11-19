@@ -19,8 +19,16 @@ echo "job $SLURM_JOB_ID on $(hostname): $RUN_ID, start $(date -Is)" > "$OUT/job.
 # and a script that is replaced while bash is still reading it fails with "Stale file handle".
 SNAP="$LOCAL/code/${RUN_ID}_${SLURM_JOB_ID}"
 mkdir -p "$SNAP/lab" "$SNAP/results"
-cp -r "$PATH_PROGRAM"/{scripts,config,analysis,baseline_models,networks,requirements.txt} "$SNAP/"
-cp -r "$PATH_PROGRAM"/lab/{fleet.py,arena.json,arenas,candidates,cluster} "$SNAP/lab/"
+# A submission that syncs while this copy runs replaces files under it ("replaced while being copied");
+# retry until one copy goes through cleanly.
+for attempt in 1 2 3 4 5 6; do
+    if cp -r "$PATH_PROGRAM"/{scripts,config,analysis,baseline_models,networks,requirements.txt} "$SNAP/" &&
+       cp -r "$PATH_PROGRAM"/lab/{fleet.py,arena.json,arenas,candidates,cluster} "$SNAP/lab/"; then
+        break
+    fi
+    [ "$attempt" = 6 ] && { echo "code copy failed 6 times" >> "$OUT/job.txt"; exit 1; }
+    sleep 20
+done
 set +e
 singularity exec --cleanenv --env RUN_ID="$RUN_ID" \
     --bind "$SNAP":/app --bind "$LOCAL/results":/app/results --bind "$LOCAL/venv":/venv \
